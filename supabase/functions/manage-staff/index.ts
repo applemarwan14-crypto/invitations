@@ -34,12 +34,17 @@ Deno.serve(async (req) => {
     const displayName = String(body.display_name ?? "").trim().slice(0, 60);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "invalid_email" }, 400);
     if (password.length < 12) return json({ error: "weak_password" }, 400);
+    // The DB trigger rejects any sign-up whose email isn't on this short-lived allowlist.
+    const { error: allowErr } = await admin.from("signup_allowlist").upsert({ email, created_at: new Date().toISOString() });
+    if (allowErr) return json({ error: allowErr.message }, 500);
     const { data, error } = await admin.auth.admin.createUser({
       email, password, email_confirm: true,
-      app_metadata: { created_by_admin: "true" },
       user_metadata: { display_name: displayName || email.split("@")[0] },
     });
-    if (error) return json({ error: error.message }, 400);
+    if (error) {
+      await admin.from("signup_allowlist").delete().eq("email", email);
+      return json({ error: error.message }, 400);
+    }
     // New accounts start as active staff (admin explicitly created them).
     await admin.from("profiles").update({ is_active: true, role: "staff" }).eq("user_id", data.user.id);
     return json({ ok: true, user_id: data.user.id });
