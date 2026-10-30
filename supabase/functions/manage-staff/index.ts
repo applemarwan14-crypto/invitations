@@ -36,6 +36,7 @@ Deno.serve(async (req) => {
     if (password.length < 12) return json({ error: "weak_password" }, 400);
     const { data, error } = await admin.auth.admin.createUser({
       email, password, email_confirm: true,
+      app_metadata: { created_by_admin: "true" },
       user_metadata: { display_name: displayName || email.split("@")[0] },
     });
     if (error) return json({ error: error.message }, 400);

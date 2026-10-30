@@ -34,15 +34,11 @@ React 19 + Vite + Tailwind 4 + مكوّنات بأسلوب shadcn/ui · Supabase
 
 ## خطوات التشغيل (مرة وحدة)
 
-### 1) Supabase: إعدادات لازم تسويها بنفسك من اللوحة
-1. **Authentication → Sign In / Providers**: اقفل **Allow new users to sign up**.
-2. **Authentication → Users → Add user → Create new user**: اكتب إيميلك وكلمة مرور قوية (16 حرف وأكثر)، وفعّل **Auto Confirm User**.
-3. **SQL Editor**: شغّل هذا الأمر عشان تصير مدير (حط إيميلك):
-   ```sql
-   update public.profiles set role = 'admin', is_active = true where email = 'your@email.com';
-   ```
-4. **Authentication → URL Configuration → Site URL**: حط رابط GitHub Pages (الخطوة 2).
-5. فعّل التحقق بخطوتين (2FA) على حسابك في Supabase وفي GitHub.
+### 1) Supabase (جاهز ✅)
+- حساب المدير `apple.marwan14@gmail.com` جاهز ومفعّل. **غيّر كلمة المرور المؤقتة** من لوحة Supabase ← Authentication ← Users.
+- التسجيل العام مقفول من قاعدة البيانات: أي حساب ما أنشأه المدير من صفحة **الموظفون** ينرفض. وللاحتياط، اقفل **Allow new users to sign up** من Authentication ← Sign In / Providers.
+- حط رابط GitHub Pages في Authentication ← URL Configuration ← Site URL.
+- فعّل التحقق بخطوتين (2FA) على حسابك في Supabase وفي GitHub.
 
 ### 2) GitHub Pages
 ```bash
